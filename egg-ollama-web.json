@@ -1,13 +1,10 @@
 {
-  "_comment": "Ollama Web Egg via GitHub",
-  "meta": { "version": "PTDL_v2" },
   "name": "Ollama Web + API (GitHub)",
   "author": "Donald Warren",
   "description": "Pulls Ollama + web UI project from GitHub, auto-downloads default model.",
   "docker_images": { "default": "debian:bookworm-slim" },
   "startup": "./startup.sh",
   "config": {
-    "logs": { "custom": true, "location": "logs/server.log", "log_match": "Application startup complete" },
     "stop": "killall uvicorn && killall ollama"
   },
   "scripts": {
