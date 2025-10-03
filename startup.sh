@@ -15,11 +15,11 @@ else
     echo "Model $DEFAULT_MODEL already exists."
 fi
 
-# Start Ollama API
+# Start Ollama API in background
 echo "Starting Ollama API on port $OLLAMA_PORT..."
 ollama serve --port "$OLLAMA_PORT" &
 
-# Start FastAPI Web UI
+# Start FastAPI web UI
 echo "Starting Web UI on port $WEB_PORT..."
 uvicorn app:app --host 0.0.0.0 --port "$WEB_PORT"
 
