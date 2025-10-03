@@ -24,4 +24,3 @@ git clone https://github.com/N0tMilk/ollama-pterodactyl.git /app\ncd /app\npip3 
     { "name": "DEFAULT_MODEL", "description": "Model to auto-download at startup", "env_variable": "DEFAULT_MODEL", "default_value": "llama3", "user_viewable": true, "user_editable": true }
   ]
 }
-``
