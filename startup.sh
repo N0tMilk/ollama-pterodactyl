@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-WEB_PORT="${WEB_PORT:-8000}"
+# Use Pterodactyl assigned port if WEB_PORT not set
+WEB_PORT="${WEB_PORT:-${SERVER_PORT:-8000}}"
 OLLAMA_PORT="${OLLAMA_PORT:-11434}"
 DEFAULT_MODEL="${DEFAULT_MODEL:-llama3}"
 
@@ -19,7 +20,7 @@ fi
 echo "Starting Ollama API on port $OLLAMA_PORT..."
 ollama serve --port "$OLLAMA_PORT" &
 
-# Start FastAPI web UI
+# Start FastAPI Web UI
 echo "Starting Web UI on port $WEB_PORT..."
 uvicorn app:app --host 0.0.0.0 --port "$WEB_PORT"
 
