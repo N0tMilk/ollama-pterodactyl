@@ -1,12 +1,16 @@
 #!/bin/bash
 set -e
 
-# Use Pterodactyl-assigned ports
-WEB_PORT="${WEB_PORT:-${SERVER_PORT:-8000}}"
+WEB_PORT="${WEB_PORT:-8000}"
 OLLAMA_PORT="${OLLAMA_PORT:-11434}"
 DEFAULT_MODEL="${DEFAULT_MODEL:-llama3.1}"
 
-echo "Using default model: $DEFAULT_MODEL"
+echo "Starting Ollama API on port $OLLAMA_PORT..."
+# Start Ollama in the background
+ollama serve --port "$OLLAMA_PORT" &
+
+# Wait a few seconds for Ollama to start
+sleep 5
 
 # Pull model if not installed
 if ! ollama list | grep -q "$DEFAULT_MODEL"; then
@@ -16,11 +20,7 @@ else
     echo "Model $DEFAULT_MODEL already exists."
 fi
 
-# Start Ollama API in background
-echo "Starting Ollama API on port $OLLAMA_PORT..."
-ollama serve --port "$OLLAMA_PORT" &
-
-# Start FastAPI web UI
+# Start FastAPI Web UI
 echo "Starting Web UI on port $WEB_PORT..."
 uvicorn app:app --host 0.0.0.0 --port "$WEB_PORT"
 
