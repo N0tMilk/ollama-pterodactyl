@@ -2,22 +2,53 @@
   "name": "Ollama Web + API (GitHub)",
   "author": "Donald Warren",
   "description": "Pulls Ollama + web UI project from GitHub, auto-downloads default model.",
-  "docker_images": { "default": "debian:bookworm-slim" },
+  "docker_images": {
+    "default": "debian:bookworm-slim"
+  },
   "startup": "./startup.sh",
   "config": {
+    "logs": {
+      "custom": true,
+      "location": "/app/logs/server.log",
+      "log_match": "Application startup complete"
+    },
     "stop": "killall uvicorn && killall ollama"
   },
   "scripts": {
     "installation": {
       "script": "#!/bin/bash\napt-get update && apt-get install -y curl git python3 python3-pip ca-certificates\n\
+mkdir -p /app/logs\n\
 git clone https://github.com/N0tMilk/ollama-pterodactyl.git /app\ncd /app\npip3 install --no-cache-dir -r requirements.txt\ncurl -fsSL https://ollama.com/install.sh | sh\nchmod +x startup.sh",
       "container": "debian:bookworm-slim",
       "entrypoint": "bash"
     }
   },
   "variables": [
-    { "name": "WEB_PORT", "description": "Web frontend port", "env_variable": "WEB_PORT", "default_value": "8000", "user_viewable": true, "user_editable": true, "rules": "required|numeric" },
-    { "name": "OLLAMA_PORT", "description": "Ollama API port", "env_variable": "OLLAMA_PORT", "default_value": "11434", "user_viewable": true, "user_editable": true, "rules": "required|numeric" },
-    { "name": "DEFAULT_MODEL", "description": "Model to auto-download at startup", "env_variable": "DEFAULT_MODEL", "default_value": "llama3", "user_viewable": true, "user_editable": true }
+    {
+      "name": "WEB_PORT",
+      "description": "Web frontend port",
+      "env_variable": "WEB_PORT",
+      "default_value": "8000",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|numeric"
+    },
+    {
+      "name": "OLLAMA_PORT",
+      "description": "Ollama API port",
+      "env_variable": "OLLAMA_PORT",
+      "default_value": "11434",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|numeric"
+    },
+    {
+      "name": "DEFAULT_MODEL",
+      "description": "Model to auto-download at startup",
+      "env_variable": "DEFAULT_MODEL",
+      "default_value": "llama3",
+      "user_viewable": true,
+      "user_editable": true
+    }
   ]
 }
