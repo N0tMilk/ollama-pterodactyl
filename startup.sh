@@ -3,7 +3,7 @@ set -e
 
 WEB_PORT="${WEB_PORT:-8000}"
 OLLAMA_PORT="${OLLAMA_PORT:-11434}"
-DEFAULT_MODEL="${DEFAULT_MODEL:-llama3}"  # dynamically set by Pterodactyl
+DEFAULT_MODEL="${DEFAULT_MODEL:-llama3}"
 
 echo "Using default model: $DEFAULT_MODEL"
 
