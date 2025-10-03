@@ -1,3 +1,4 @@
+#WORK IN PROGRESS NOT WORKING YET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Ollama Web + API for Pterodactyl
 
 A GitHub-based Pterodactyl egg that runs **Ollama** with a **FastAPI web interface**.  
