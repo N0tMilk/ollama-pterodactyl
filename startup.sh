@@ -1,27 +1,44 @@
 #!/bin/bash
 set -e
 
-WEB_PORT="${WEB_PORT:-8000}"
-OLLAMA_PORT="${OLLAMA_PORT:-11434}"
-DEFAULT_MODEL="${DEFAULT_MODEL:-llama3}"
-
-echo "Using default model: $DEFAULT_MODEL"
-
-# Pull model if not installed
-if ! ollama list | grep -q "$DEFAULT_MODEL"; then
-    echo "Pulling default model $DEFAULT_MODEL..."
-    ollama pull "$DEFAULT_MODEL"
-else
-    echo "Model $DEFAULT_MODEL already exists."
+echo "=== Checking root privileges ==="
+if [ "$EUID" -ne 0 ]; then
+  echo "❌ Please run as root. Try: sudo ./startup.sh"
+  exit 1
 fi
 
-# Start Ollama API
-echo "Starting Ollama API on port $OLLAMA_PORT..."
-ollama serve --port "$OLLAMA_PORT" &
+echo "=== Updating system packages ==="
+apt update -y && apt upgrade -y
 
-# Activate virtual environment and start Web UI
-. /mnt/server/venv/bin/activate
-echo "Starting Web UI on port $WEB_PORT..."
-uvicorn app:app --host 0.0.0.0 --port "$WEB_PORT"
+echo "=== Installing dependencies ==="
+apt install -y curl git python3 python3-pip python3-venv ca-certificates build-essential psmisc net-tools
 
-wait
+echo "=== Installing Ollama ==="
+if ! command -v ollama &> /dev/null; then
+  curl -fsSL https://ollama.com/install.sh | sh
+else
+  echo "Ollama already installed"
+fi
+
+echo "=== Setting up web app ==="
+
+APP_DIR="/opt/ollama-web"
+if [ ! -d "$APP_DIR" ]; then
+  git clone https://github.com/N0tMilk/ollama-pterodactyl.git "$APP_DIR"
+fi
+
+cd "$APP_DIR"
+
+echo "=== Setting up Python virtual environment ==="
+python3 -m venv venv
+source venv/bin/activate
+
+echo "=== Installing Python dependencies ==="
+pip install -r requirements.txt
+
+echo "=== Starting Ollama service ==="
+ollama serve --port 11434 &
+sleep 5
+
+echo "=== Starting web server ==="
+uvicorn app:app --host 0.0.0.0 --port 8000
