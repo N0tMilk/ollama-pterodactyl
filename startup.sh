@@ -5,8 +5,10 @@ WEB_PORT="${WEB_PORT:-8000}"
 OLLAMA_PORT="${OLLAMA_PORT:-11434}"
 DEFAULT_MODEL="${DEFAULT_MODEL:-llama3.1}"
 
+echo "Using default model: $DEFAULT_MODEL"
+
+# Start Ollama API in background
 echo "Starting Ollama API on port $OLLAMA_PORT..."
-# Start Ollama in the background
 ollama serve --port "$OLLAMA_PORT" &
 
 # Wait a few seconds for Ollama to start
