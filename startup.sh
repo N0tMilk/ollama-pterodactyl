@@ -3,16 +3,9 @@ set -e
 
 WEB_PORT="${WEB_PORT:-8000}"
 OLLAMA_PORT="${OLLAMA_PORT:-11434}"
-DEFAULT_MODEL="${DEFAULT_MODEL:-llama3.1}"
+DEFAULT_MODEL="${DEFAULT_MODEL:-llama3}"
 
 echo "Using default model: $DEFAULT_MODEL"
-
-# Start Ollama API in background
-echo "Starting Ollama API on port $OLLAMA_PORT..."
-ollama serve --port "$OLLAMA_PORT" &
-
-# Wait a few seconds for Ollama to start
-sleep 5
 
 # Pull model if not installed
 if ! ollama list | grep -q "$DEFAULT_MODEL"; then
@@ -22,7 +15,12 @@ else
     echo "Model $DEFAULT_MODEL already exists."
 fi
 
-# Start FastAPI Web UI
+# Start Ollama API
+echo "Starting Ollama API on port $OLLAMA_PORT..."
+ollama serve --port "$OLLAMA_PORT" &
+
+# Activate virtual environment and start Web UI
+. /mnt/server/venv/bin/activate
 echo "Starting Web UI on port $WEB_PORT..."
 uvicorn app:app --host 0.0.0.0 --port "$WEB_PORT"
 
